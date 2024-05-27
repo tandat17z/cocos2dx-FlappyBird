@@ -7,7 +7,7 @@ var Bird = cc.Sprite.extend({
     ctor:function () {
         this._super(res.bird_png);
         this.scale = MW.BIRD_SCALE;
-        this.schedule(this.update, 1/120);
+        this.scheduleUpdate();
     },
     update:function (dt) {
         this.updateMove(dt);
