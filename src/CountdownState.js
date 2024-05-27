@@ -48,16 +48,7 @@ var CountdownState = cc.Layer.extend({
     update:function (dt) {
         this._count -= 1;
         if( this._count < 0){
-            var scene = new cc.Scene();
-            scene.addChild(new PlayState);
-            cc.director.runScene(new cc.TransitionFade(1.2, scene));
-
-            // cc.director.runScene(new PlayState());
-            // cc.LoaderScene.preload(g_countdownScreen, function () {
-            //     // cc.audioEngine.stopMusic();
-            //     // cc.audioEngine.stopAllEffects();
-            //     cc.director.runScene(new PlayState());
-            // }, this);
+            cc.director.runScene(new PlayState());
         }
         else{
             this._title.setString(this._count);

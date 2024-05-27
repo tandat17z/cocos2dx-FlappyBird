@@ -1,10 +1,13 @@
 
 
 var Bird = cc.Sprite.extend({
-    speed:220,
+    speed:MW.SPEED,
+    cur_v: null,
+    _start: false,
     ctor:function () {
         this._super(res.bird_png);
-        this.scheduleUpdate();
+        this.scale = MW.BIRD_SCALE;
+        this.schedule(this.update, 1/120);
     },
     update:function (dt) {
         this.updateMove(dt);
@@ -12,24 +15,40 @@ var Bird = cc.Sprite.extend({
     },
     updateMove:function(dt)
     {
-        if ((MW.KEYS[cc.KEY.w] || MW.KEYS[cc.KEY.up]) && this.y <= winSize.height) {
-            this.y += dt * this.speed;
+        if(this.cur_v > 0){
+            this.setRotation(-45);
         }
-        if ((MW.KEYS[cc.KEY.s] || MW.KEYS[cc.KEY.down]) && this.y >= 0) {
-            this.y -= dt * this.speed;
+        else if(this.cur_v <= 0){
+            this.setRotation(45);
         }
-        if ((MW.KEYS[cc.KEY.a] || MW.KEYS[cc.KEY.left]) && this.x >= 0) {
-            this.x -= dt * this.speed;
+        if( this._start ){
+            this.x += dt*this.speed;
+            this.cur_v -= MW.GRAVITY*dt;
+            this.y += this.cur_v*dt;
         }
-        if ((MW.KEYS[cc.KEY.d] || MW.KEYS[cc.KEY.right]) && this.x <= winSize.width) {
-            this.x += dt * this.speed;
+        if ( MW.KEYS[cc.KEY.space]  ){
+            this.cur_v = 600;
+            this._start = true;
         }
+
+        // if ((MW.KEYS[cc.KEY.w] || MW.KEYS[cc.KEY.up]) && this.y <= winSize.height) {
+        //     this.y += dt * this.speed;
+        // }
+        // if ((MW.KEYS[cc.KEY.s] || MW.KEYS[cc.KEY.down]) && this.y >= 0) {
+        //     this.y -= dt * this.speed;
+        // }
+        // if ((MW.KEYS[cc.KEY.a] || MW.KEYS[cc.KEY.left]) && this.x - MW.X_BIRD >= 0) {
+        //     this.x -= dt * this.speed*5;
+        // }
+        // if ((MW.KEYS[cc.KEY.d] || MW.KEYS[cc.KEY.right])) {
+        //     this.x += dt * this.speed;
+        // }
     },
     destroy:function () {
 
     },
-    collideRect:function (x, y) {
+    collideRect:function () {
         var w = this.width, h = this.height;
-        return cc.rect(x - w / 2, y - h / 2, w, h / 2);
+        return cc.rect(this.x - w / 2, this.y - h / 2, w, h);
     }
 });

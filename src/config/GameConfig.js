@@ -31,13 +31,29 @@ MW.SOUND = true;
 MW.WIDTH = 1152;
 MW.HEIGHT = 576;
 
+MW.BG_WIDTH = 1152;
 MW.BG_SCALE = 2;
+MW.PIPE_SCALE = 1.5;
+MW.BIRD_SCALE = 1.5;
+
 MW.FONTCOLOR = "#ffffff";
 MW.FONTSIZE1 = 75;
 MW.FONTSIZE2 = 50
 
-MW.COUNTDOWN = 5
+MW.COUNTDOWN = 3
+
+MW.SPEED = 200
+MW.X_BIRD = 200
 
 MW.CONTAINER = {
     PIPES: []
 }
+MW.GRAVITY = 2500;
+
+Arg_preset = [
+    {
+        x: 1000,
+        y: 100,
+        width: 400
+    }
+]
