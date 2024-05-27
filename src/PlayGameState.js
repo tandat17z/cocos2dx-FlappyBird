@@ -1,7 +1,12 @@
+STATE_COUNTDOWN = 0;
+STATE_PLAYING = 1;
+STATE_GAMEOVER = 2;
+
 var PlayState = cc.Layer.extend({
+    _state: 0,
     _bird: null,
     _title : null,
-    _camera: null,
+    _lblScore: 0,
     ctor:function () {
         this._super();
         this.init();
@@ -74,12 +79,16 @@ var PlayState = cc.Layer.extend({
 
             console.log("To ScoreState");
 
-            //load resources
-            cc.LoaderScene.preload(g_countdownScreen, function () {
-                // cc.audioEngine.stopMusic();
-                // cc.audioEngine.stopAllEffects();
-                cc.director.runScene(new ScoreState());
-            }, this);
+            var scene = new cc.Scene();
+            scene.addChild(new ScoreState());
+            cc.director.runScene(new cc.TransitionFade(1.2, scene));
+
+            // //load resources
+            // cc.LoaderScene.preload(g_countdownScreen, function () {
+            //     // cc.audioEngine.stopMusic();
+            //     // cc.audioEngine.stopAllEffects();
+            //     cc.director.runScene(new ScoreState());
+            // }, this);
         }
     },
 });

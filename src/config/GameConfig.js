@@ -5,9 +5,12 @@ var MW = MW || {};
 //game state
 MW.GAME_STATE = {
     HOME:0,
-    PLAY:1,
-    OVER:2
+    COUNTDOWN: 1,
+    PLAY:2,
+    OVER:3
 };
+
+MW.STATE = null;
 
 //keys
 MW.KEYS = [];
@@ -34,3 +37,7 @@ MW.FONTSIZE1 = 75;
 MW.FONTSIZE2 = 50
 
 MW.COUNTDOWN = 5
+
+MW.CONTAINER = {
+    PIPES: []
+}
