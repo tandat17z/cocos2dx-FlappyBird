@@ -21,6 +21,9 @@
         "src/PlayGameState.js",
         "src/ScoreState.js",
 
-        "src/Bird.js"
+        "src/Bird.js",
+        "src/Pipe.js",
+        "src/Background.js",
+        "src/Ground.js"
     ]
 }

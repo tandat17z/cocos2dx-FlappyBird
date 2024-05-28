@@ -24,14 +24,6 @@ var g_titleScreen = [
     res.marios_way_mp3
 ];
 
-var g_countdownScreen = [
-    res.background_png,
-    res.ground_png,
-    res.flappy_ttf,
-    res.font_ttf,
-    res.marios_way_mp3
-];
-
 var g_playScreen = [
     res.background_png,
     res.ground_png,
@@ -47,11 +39,3 @@ var g_playScreen = [
     res.flappy_ttf,
     res.font_ttf
 ];
-
-var g_scoreScreen = [
-    res.background_png,
-    res.ground_png,
-    res.flappy_ttf,
-    res.font_ttf,
-    res.marios_way_mp3
-]

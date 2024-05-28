@@ -65,7 +65,7 @@ var ScoreState = cc.Layer.extend({
             console.log("To countdownScreen");
 
             //load resources
-            cc.LoaderScene.preload(g_countdownScreen, function () {
+            cc.LoaderScene.preload(g_playScreen, function () {
                 // cc.audioEngine.stopMusic();
                 // cc.audioEngine.stopAllEffects();
                 cc.director.runScene(new CountdownState());
