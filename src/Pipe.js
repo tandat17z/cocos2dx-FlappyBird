@@ -37,14 +37,25 @@ var Pipe = cc.Sprite.extend({
         }
     },
     update:function(dt){
+
     },
     destroy:function () {
 
     },
     collideRect:function () {
         var w = this.width*this.scale, h = this.height*this.scale;
-        return cc.rect(this.x , this.y, w, h);
+        return cc.rect(this.x, this.y, w, h);
     }
+    // getVertices:function () {
+    //     var w = this.width * this.scale, h = this.height * this.scale;
+    //     var vertices = [
+    //         (this.x, this.y),
+    //         (this.x + w, this.y),
+    //         (this.x + w, this.y + h),
+    //         (this.x , this.y + h)
+    //     ]
+    //     return vertices
+    // }
 });
 
 Pipe.create = function(arg, flippedY){

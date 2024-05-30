@@ -96,11 +96,10 @@ var PlayState = cc.Layer.extend({
                 this._lblScore.x = this._bird.x- MW.X_BIRD;
             }
 
-            // this.addPipe();
-            // this.checkIsCollide();
+            this.checkIsCollide();
             if( this.checkUpdatePipe() ) this.updatePipe();
             if( this.checkUpdateMap() ) this.updateMap();
-            // this.scoreCounter();
+            this.scoreCounter();
 
             // print score
             this._lblScore.setString("Score: " + MW.SCORE);
@@ -112,22 +111,19 @@ var PlayState = cc.Layer.extend({
             }
         }
     },
+
     checkUpdatePipe: function(){
         console.log(this._pipeout_id)
         var pipeout = MW.CONTAINER.PIPES[this._pipeout_id];
         var pipe_limit = pipeout.x + pipeout.width*MW.PIPE_SCALE + 10;
         return pipe_limit < this._bird.x - MW.X_BIRD;
     },
+
     checkUpdateMap: function(){
         var bg_limit = this._bg.x + Math.min(this._bg.width, this._ground.width)*MW.BG_SCALE - 10;
         return bg_limit < this._bird.x - MW.X_BIRD;
     },
-    collide:function(a, b){
-        var aRect = a.getBoundingBoxToWorld();
-        var bRect = b.getBoundingBoxToWorld();
 
-        return cc.rectIntersectsRect(aRect, bRect);
-    },
     updateMap:function(){
         console.log("update bg");
 
@@ -137,10 +133,11 @@ var PlayState = cc.Layer.extend({
 
         var bg_temp = this._bgnext, ground_temp = this._groundnext;
         this._bgnext = this._bg;
-        this._groundnext = this._groundnext;
+        this._groundnext = this._ground;
         this._bg = bg_temp;
         this._ground = ground_temp;
     },
+
     updatePipe:function(){
         console.log("update pipe");
         var length = MW.CONTAINER.PIPES.length;
@@ -166,47 +163,21 @@ var PlayState = cc.Layer.extend({
 
         this._pipeout_id = (this._pipeout_id + 2)%length;
     },
-    // addPipe:function(){
-    //     let length = MW.CONTAINER.PIPES.length;
-    //     let pipe = MW.CONTAINER.PIPES[length - 1];
-    //
-    //     let rand = Math.random()*300 + 200;
-    //     let y_rand = Math.random()*300 + 75;
-    //     let w_rand = Math.random()*100 + 150;
-    //
-    //     if( pipe.x + rand < this._bg.x + MW.BG_WIDTH*MW.BG_SCALE){
-    //         console.log("add pipe" );
-    //         arg = {
-    //             x: pipe.x + rand,
-    //             y: y_rand,
-    //             width: w_rand
-    //         };
-    //         let pipe1 = Pipe.create(arg, false);
-    //         let pipe2 = Pipe.create(arg, true);
-    //
-    //         g_playState.addChild(pipe1, 5, 1);
-    //         g_playState.addChild(pipe2, 5, 1);
-    //     }
-    // },
-    // RemovePipe: function(){
-    //     while(MW.CONTAINER.PIPES.length > 0){
-    //         let pipe = MW.CONTAINER.PIPES[0];
-    //         if( pipe.x + pipe.width < this._bgre.x + MW.BG_WIDTH*MW.BG_SCALE){
-    //             console.log("remove pipe" + MW.CONTAINER.PIPES.length);
-    //             MW.CONTAINER.PIPES.shift();
-    //             this.removeChild(pipe);
-    //         }
-    //
-    //         else
-    //             break;
-    //     }
-    // },
-    checkIsCollide:function(){
-        let idx = MW.CONTAINER.PIPES.indexOf(this._nextpipe);
 
+    collide:function(a, b){
+        var aRect = a.collideRect();
+        var bRect = b.collideRect();
+
+        return this._bird.checkInBox(b.x, b.y);
+        return false;
+    },
+
+    checkIsCollide:function(){
         // check with pipe
-        if( this.collide(this._bird, MW.CONTAINER.PIPES[idx])
-            || this.collide(this._bird, MW.CONTAINER.PIPES[idx + 1])
+        var pipenext1 = MW.CONTAINER.PIPES[this._pipenext_id];
+        var pipenext2 = MW.CONTAINER.PIPES[this._pipenext_id + 1];
+        if( this.collide(this._bird, pipenext1)
+            || this.collide(this._bird, pipenext2)
             || this.collide(this._bird, this._ground)){
                 console.log("collide")
                 this._state = STATE_GAMEOVER;
@@ -214,10 +185,12 @@ var PlayState = cc.Layer.extend({
         }
     },
     scoreCounter:function(){
-        let idx = MW.CONTAINER.PIPES.indexOf(this._nextpipe);
-        if( this._bird.x > this._nextpipe.x + this._nextpipe.width){
+        var pipenext = MW.CONTAINER.PIPES[this._pipenext_id];
+        if( this._bird.x > pipenext.x + pipenext.width*MW.PIPE_SCALE){
             MW.SCORE += 1;
-            this._nextpipe = MW.CONTAINER.PIPES[idx + 2];
+            //update pipe next
+            var length = MW.CONTAINER.PIPES.length;
+            this._pipenext_id = (this._pipenext_id + 2)%length;
         }
     },
     onGameOver:function(){
