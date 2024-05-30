@@ -15,15 +15,6 @@ var Pipe = cc.Sprite.extend({
             this.y = arg.y - this.height*this.scale;
         }
 
-        var w = this.width, h = this.height;
-        this._rectNode = new cc.DrawNode();
-        var rectPoints = [
-            cc.p(0, 0),
-            cc.p(0 + w, 0 + h)
-        ]
-        this._rectNode.drawRect(rectPoints[0], rectPoints[1], null, 1, cc.color(255, 0, 0, 255));
-        this.addChild(this._rectNode);
-
         this.scheduleUpdate();
     },
     setArg:function(arg){
@@ -45,17 +36,21 @@ var Pipe = cc.Sprite.extend({
     collideRect:function () {
         var w = this.width*this.scale, h = this.height*this.scale;
         return cc.rect(this.x, this.y, w, h);
+    },
+    checkInPipe: function(x, y){
+        var w = this.width * this.scale, h = this.height * this.scale;
+
+        var chk1 = (x >= this.x) && (x <= this.x + w);
+        var chk2 = (y >= this.y) && (y <= this.y + h);
+
+        return (chk1 && chk2);
+    },
+    getWidth: function(){
+        return this.width * this.scale;
+    },
+    getHeight: function(){
+        return this.height * this.scale;
     }
-    // getVertices:function () {
-    //     var w = this.width * this.scale, h = this.height * this.scale;
-    //     var vertices = [
-    //         (this.x, this.y),
-    //         (this.x + w, this.y),
-    //         (this.x + w, this.y + h),
-    //         (this.x , this.y + h)
-    //     ]
-    //     return vertices
-    // }
 });
 
 Pipe.create = function(arg, flippedY){

@@ -1,5 +1,6 @@
 STATE_PLAYING = 0;
 STATE_GAMEOVER = 1;
+STATE_PAUSE = 2;
 
 var g_playState = null;
 
@@ -15,6 +16,7 @@ var PlayState = cc.Layer.extend({
 
     _pipenext_id: null,
     _pipeout_id: null,
+    _useSkill: false,
     ctor:function () {
         this._super();
         this.init();
@@ -24,6 +26,7 @@ var PlayState = cc.Layer.extend({
         g_playState = this;
 
         this._state = STATE_PLAYING;
+        this._useSkill = false;
         winSize = cc.director.getWinSize();
 
         // Create Background
@@ -46,15 +49,30 @@ var PlayState = cc.Layer.extend({
 
         // Score
         MW.SCORE = 0;
-        this._lblScore = new cc.LabelTTF("Score: " + MW.SCORE, "Arial", 50);
-        this._lblScore.attr({
-            anchorX: 0,
-            anchorY: 1,
-            x: 0,
-            y: winSize.height
-        })
-        this._lblScore.textAlign = cc.TEXT_ALIGNMENT_LEFT;
-        this.addChild(this._lblScore, 1000);
+        // this._lblScore = new cc.LabelTTF("Score: " + MW.SCORE, "Arial", 50);
+        // this._lblScore.attr({
+        //     anchorX: 0,
+        //     anchorY: 1,
+        //     x: 0,
+        //     y: winSize.height
+        // })
+        // this._lblScore.textAlign = cc.TEXT_ALIGNMENT_LEFT;
+        // this.addChild(this._lblScore, 1000);
+        //
+        // //Pause
+        // cc.MenuItemFont.setFontSize(MW.FONTSIZE2);
+        // cc.MenuItemFont.setFontName(res.flappy_ttf);
+        // var systemMenu = new cc.MenuItemFont("Pause", this.pause);
+        // systemMenu.setColor(cc.color(MW.FONTCOLOR));
+        //
+        // this._pause = new cc.Menu(systemMenu);
+        // this._pause.x = 0;
+        // this._pause.y = 0;
+        // systemMenu.attr({
+        //     x: winSize.width/2,
+        //     y: winSize.height/2 - 125,
+        // });
+        // this.addChild(this._pause, 1, 2);
 
         // schedule
         this.scheduleUpdate();
@@ -70,10 +88,11 @@ var PlayState = cc.Layer.extend({
         this._groundnext = new Ground(x_next, 0);
 
         this.addChild(this._bg, -10, 1);
-        this.addChild(this._ground, -5, 1);
+        this.addChild(this._ground, 15, 1);
         this.addChild(this._bgnext, -10, 1);
-        this.addChild(this._groundnext, -5, 1);
+        this.addChild(this._groundnext, 15, 1);
     },
+
     addKeyboardListener:function(){
         //Add code here
         if( cc.sys.capabilities.hasOwnProperty('keyboard')){
@@ -88,32 +107,55 @@ var PlayState = cc.Layer.extend({
             }, this);
         }
     },
+
     update:function (dt) {
         if( this._state == STATE_PLAYING){
             // update camera
             if(this._bird){
                 this.x = MW.X_BIRD - this._bird.x;
-                this._lblScore.x = this._bird.x- MW.X_BIRD;
+                // this._lblScore.x = this._bird.x- MW.X_BIRD;
             }
 
-            this.checkIsCollide();
+
+            if( this._bird._skill == 0){
+                if( this._useSkill ){
+                    MW.SCORE += 1;
+                    //update pipe next
+                    var length = MW.CONTAINER.PIPES.length;
+                    this._pipenext_id = (this._pipenext_id + 2)%length;
+                    this._useSkill = false;
+                }
+                if( this.checkIsCollide()) {
+                    console.log("collide")
+                    this._bird.unscheduleUpdate();
+                    this._state = STATE_GAMEOVER;
+                }
+            }
+            else{
+                this._useSkill = true;
+            }
+
+            if( this.checkCollideGround()){
+                console.log("collide")
+                this._bird.unscheduleUpdate();
+                this._state = STATE_GAMEOVER;
+            }
             if( this.checkUpdatePipe() ) this.updatePipe();
             if( this.checkUpdateMap() ) this.updateMap();
             this.scoreCounter();
 
-            // print score
-            this._lblScore.setString("Score: " + MW.SCORE);
+            // // print score
+            // this._lblScore.setString("Score: " + MW.SCORE);
         }
         else if ( this._state == STATE_GAMEOVER){
-            if( MW.KEYS[cc.KEY.enter] ){
-                MW.KEYS[cc.KEY.enter] = false;
+            if( MW.KEYS[cc.KEY.space] ){
+                MW.KEYS[cc.KEY.space] = false;
                 this.onGameOver();
             }
         }
     },
 
     checkUpdatePipe: function(){
-        console.log(this._pipeout_id)
         var pipeout = MW.CONTAINER.PIPES[this._pipeout_id];
         var pipe_limit = pipeout.x + pipeout.width*MW.PIPE_SCALE + 10;
         return pipe_limit < this._bird.x - MW.X_BIRD;
@@ -147,7 +189,7 @@ var PlayState = cc.Layer.extend({
 
         var rand = Math.random()*300 + 200;
         var y_rand = Math.random()*300 + 75;
-        var w_rand = Math.random()*100 + 150;
+        var w_rand = Math.random()*100 + 250;
         var arg1 = {
             x: pipere.x + rand,
             y: y_rand,
@@ -164,25 +206,38 @@ var PlayState = cc.Layer.extend({
         this._pipeout_id = (this._pipeout_id + 2)%length;
     },
 
-    collide:function(a, b){
-        var aRect = a.collideRect();
-        var bRect = b.collideRect();
-
-        return this._bird.checkInBox(b.x, b.y);
+    checkCollideGround: function(){
+        var points = this._bird.getPoints();
+        // check with ground
+        if( points[1].y <= this._ground.height * MW.BG_SCALE) return true;
         return false;
     },
-
     checkIsCollide:function(){
-        // check with pipe
+        var points = this._bird.getPoints();
         var pipenext1 = MW.CONTAINER.PIPES[this._pipenext_id];
         var pipenext2 = MW.CONTAINER.PIPES[this._pipenext_id + 1];
-        if( this.collide(this._bird, pipenext1)
-            || this.collide(this._bird, pipenext2)
-            || this.collide(this._bird, this._ground)){
-                console.log("collide")
-                this._state = STATE_GAMEOVER;
-                this._bird.unscheduleUpdate();
+
+        // check with pipe
+        for(var id in points) {
+            var p = points[id];
+            // console.log(pipenext1.checkInPipe(p.x, p.y), pipenext2.checkInPipe(p.x, p.y));
+            if( pipenext1.checkInPipe(p.x, p.y) || pipenext2.checkInPipe(p.x, p.y) ) return true;
         }
+
+        //
+        // var points_ = [
+        //     cc.p(pipenext1.x, pipenext1.y + pipenext1.getHeight()),
+        //     cc.p(pipenext1.x + pipenext1.getWidth(), pipenext1.y + pipenext1.getHeight()),
+        //     cc.p(pipenext2.x, pipenext2.y),
+        //     cc.p(pipenext2.x + pipenext2.getWidth(), pipenext2.y)
+        // ]
+        // for( var p in points_){
+        //     var p = points_[id];
+        //     if( this._bird.checkInBird(p.x, p.y) ) return true;
+        // }
+
+        return false;
+
     },
     scoreCounter:function(){
         var pipenext = MW.CONTAINER.PIPES[this._pipenext_id];
@@ -199,6 +254,9 @@ var PlayState = cc.Layer.extend({
         var scene = new cc.Scene();
         scene.addChild(new ScoreState());
         cc.director.runScene(new cc.TransitionFade(1.2, scene));
+    },
+    pause: function(){
+        this._state = STATE_PAUSE;
     }
 });
 

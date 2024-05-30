@@ -48,7 +48,10 @@ var CountdownState = cc.Layer.extend({
     update:function (dt) {
         this._count -= 1;
         if( this._count < 0){
-            cc.director.runScene(new PlayState());
+            var scene = new cc.Scene();
+            scene.addChild(new PlayState());
+            scene.addChild(new GameController());
+            cc.director.runScene(scene);
         }
         else{
             this._title.setString(this._count);

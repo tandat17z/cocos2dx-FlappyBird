@@ -2,6 +2,14 @@
 
 var MW = MW || {};
 
+MW.SOUND = true;
+MW.btnHEIGHT = 36
+MW.btnWIDTH = 123
+
+MW.FONTCOLOR = "#ffffff";
+MW.FONTSIZE1 = 75;
+MW.FONTSIZE2 = 50
+
 //game state
 MW.GAME_STATE = {
     HOME:0,
@@ -35,20 +43,20 @@ MW.BG_WIDTH = 1152;
 MW.BG_SCALE = 2;
 MW.PIPE_SCALE = 1.5;
 MW.BIRD_SCALE = 1.5;
-
-MW.FONTCOLOR = "#ffffff";
-MW.FONTSIZE1 = 75;
-MW.FONTSIZE2 = 50
-
+MW.BIRD_POWERSCALE = 3;
+MW.BIRD_S1 = 5;
+MW.BIRD_S2 = 2;
+MW.BIRD_COUNTDOWN_S = 10;
 MW.COUNTDOWN = 3
 
-MW.SPEED = 200
+MW.SPEED = 150
 MW.X_BIRD = 200
+MW.GRAVITY = 1250;
 
 MW.CONTAINER = {
     PIPES: []
 }
-MW.GRAVITY = 2500;
+
 
 Arg_preset = [
     {

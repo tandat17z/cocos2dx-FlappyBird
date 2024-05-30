@@ -24,6 +24,7 @@
         "src/Bird.js",
         "src/Pipe.js",
         "src/Background.js",
-        "src/Ground.js"
+        "src/Ground.js",
+        "src/GameController.js"
     ]
 }

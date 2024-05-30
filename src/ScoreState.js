@@ -11,12 +11,26 @@ var ScoreState = cc.Layer.extend({
         this.initBackGround();
         this.addKeyboardListener();
 
-        // Countdown
-        this._title = new cc.LabelTTF("ScoreState: " + MW.SCORE, res.font_ttf, MW.FONTSIZE1);
+        // Score
+        this._title = new cc.LabelTTF("ScoreState: " + MW.SCORE, res.font_ttf, MW.FONTSIZE2);
         this._title.x = MW.WIDTH/2;
-        this._title.y = MW.HEIGHT/2;
+        this._title.y = MW.HEIGHT/2 + 25;
         this._title.color = cc.color(MW.FONTCOLOR);
         this.addChild(this._title, 10);
+
+        // Play
+        cc.MenuItemFont.setFontSize(MW.FONTSIZE2);
+        cc.MenuItemFont.setFontName(res.flappy_ttf);
+        var systemMenu = new cc.MenuItemFont("Play", this.toPlayState);
+        systemMenu.setColor(cc.color(MW.FONTCOLOR));
+        var menu = new cc.Menu(systemMenu);
+        menu.x = 0;
+        menu.y = 0;
+        systemMenu.attr({
+            x: winSize.width/2,
+            y: winSize.height/2 - 125,
+        });
+        this.addChild(menu, 1, 2);
 
         // schedule
         this.scheduleUpdate();
@@ -72,6 +86,16 @@ var ScoreState = cc.Layer.extend({
             }, this);
         }
     },
+    toPlayState:function(){
+        console.log("To countdownScreen");
+
+        //load resources
+        cc.LoaderScene.preload(g_playScreen, function () {
+            // cc.audioEngine.stopMusic();
+            // cc.audioEngine.stopAllEffects();
+            cc.director.runScene(new CountdownState());
+        }, this);
+    }
 });
 
 ScoreState.scene = function () {
