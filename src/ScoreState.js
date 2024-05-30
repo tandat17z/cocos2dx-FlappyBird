@@ -12,7 +12,7 @@ var ScoreState = cc.Layer.extend({
         this.addKeyboardListener();
 
         // Countdown
-        this._title = new cc.LabelTTF("ScoreState", res.font_ttf, MW.FONTSIZE1);
+        this._title = new cc.LabelTTF("ScoreState: " + MW.SCORE, res.font_ttf, MW.FONTSIZE1);
         this._title.x = MW.WIDTH/2;
         this._title.y = MW.HEIGHT/2;
         this._title.color = cc.color(MW.FONTCOLOR);
