@@ -93,7 +93,9 @@ var TitleScreenState = cc.Layer.extend({
         cc.LoaderScene.preload(g_playScreen, function () {
             // cc.audioEngine.stopMusic();
             // cc.audioEngine.stopAllEffects();
-            cc.director.runScene(new CountdownState());
+            var scene = new cc.Scene();
+            scene.addChild(new CountdownState())
+            cc.director.runScene(scene);
         }, this);
     },
     addKeyboardListener:function(){
@@ -120,17 +122,6 @@ var TitleScreenState = cc.Layer.extend({
         var data = {
             "HighScore": 10
         }
-        var jsonData = JSON.stringify(data);
-
-        var filePath = "src/config/config.json";
-
-        cc.writeStringToFile()
-        if ((jsonData, filePath)) {
-            cc.log("Ghi tệp JSON thành công!");
-        } else {
-            cc.log("Lỗi khi ghi tệp JSON.");
-        }
-
     },
 });
 

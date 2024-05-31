@@ -8,8 +8,10 @@ var CountdownState = cc.Layer.extend({
 
     init:function () {
         winSize = cc.director.getWinSize();
-
+        console.log("count down state init")
         this.initBackGround();
+
+        console.log("step 1")
 
         // Countdown
         this._title = new cc.LabelTTF("", "res/fonts/font.ttf", MW.FONTSIZE1);
@@ -17,10 +19,12 @@ var CountdownState = cc.Layer.extend({
         this._title.x = MW.WIDTH/2;
         this._title.y = MW.HEIGHT/2;
         this._title.color = cc.color(MW.FONTCOLOR);
+        console.log("step 2")
         this.addChild(this._title, 10);
-
+        console.log("step 3")
         // schedule
         this.schedule(this.update, 1);
+        console.log("step 4")
     },
 
     initBackGround:function()
@@ -52,6 +56,8 @@ var CountdownState = cc.Layer.extend({
             scene.addChild(new PlayState());
             scene.addChild(new GameController());
             cc.director.runScene(scene);
+
+            console.log("runScene PlayState")
         }
         else{
             this._title.setString(this._count);

@@ -22,6 +22,7 @@ MW.STATE = null;
 
 //keys
 MW.KEYS = [];
+MW.CLICK = false;
 
 //level
 MW.LEVEL = {
@@ -32,6 +33,7 @@ MW.LEVEL = {
 
 //score
 MW.SCORE = 0;
+MW.BEST_SCORE = 0;
 
 //sound
 MW.SOUND = true;
@@ -51,7 +53,7 @@ MW.COUNTDOWN = 3
 
 MW.SPEED = 150
 MW.X_BIRD = 200
-MW.GRAVITY = 1250;
+MW.GRAVITY = 1500;
 
 MW.CONTAINER = {
     PIPES: []

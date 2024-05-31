@@ -40,6 +40,7 @@ var PlayState = cc.Layer.extend({
 
         // Listener
         this.addKeyboardListener();
+        this.addTouchListener();
 
         // Create pipe
         MW.CONTAINER.PIPES = [];
@@ -93,6 +94,19 @@ var PlayState = cc.Layer.extend({
         this.addChild(this._groundnext, 15, 1);
     },
 
+    addTouchListener:function(){
+        var self = this;
+        cc.eventManager.addListener({
+            event: cc.EventListener.MOUSE,
+            onMouseDown: function(event){
+                MW.CLICK = true;
+                // console.log(event.getLocationX(), event.getLocationY())
+            },
+            onMouseUp: function(event){
+                MW.CLICK = false;
+            },
+        }, this);
+    },
     addKeyboardListener:function(){
         //Add code here
         if( cc.sys.capabilities.hasOwnProperty('keyboard')){
@@ -140,18 +154,11 @@ var PlayState = cc.Layer.extend({
                 this._bird.unscheduleUpdate();
                 this._state = STATE_GAMEOVER;
             }
+
+            // Update Map
             if( this.checkUpdatePipe() ) this.updatePipe();
             if( this.checkUpdateMap() ) this.updateMap();
             this.scoreCounter();
-
-            // // print score
-            // this._lblScore.setString("Score: " + MW.SCORE);
-        }
-        else if ( this._state == STATE_GAMEOVER){
-            if( MW.KEYS[cc.KEY.space] ){
-                MW.KEYS[cc.KEY.space] = false;
-                this.onGameOver();
-            }
         }
     },
 
@@ -188,8 +195,8 @@ var PlayState = cc.Layer.extend({
         var pipere = MW.CONTAINER.PIPES[(this._pipeout_id + length - 2)%length];
 
         var rand = Math.random()*300 + 200;
-        var y_rand = Math.random()*300 + 75;
-        var w_rand = Math.random()*100 + 250;
+        var y_rand = Math.random()*200 + 75;
+        var w_rand = Math.random()*150 + 250;
         var arg1 = {
             x: pipere.x + rand,
             y: y_rand,
@@ -207,22 +214,32 @@ var PlayState = cc.Layer.extend({
     },
 
     checkCollideGround: function(){
-        var points = this._bird.getPoints();
-        // check with ground
-        if( points[1].y <= this._ground.height * MW.BG_SCALE) return true;
-        return false;
+        // var points = this._bird.getPoints();
+        // // check with ground
+        // if( points[1].y <= this._ground.height * MW.BG_SCALE) return true;
+        // return false;
+
+        var aRect = this._bird.collideRect();
+        var bRect = this._ground.collideRect();
+        return cc.rectIntersectsRect(aRect, bRect);
     },
+
     checkIsCollide:function(){
-        var points = this._bird.getPoints();
+        // var points = this._bird.getPoints();
         var pipenext1 = MW.CONTAINER.PIPES[this._pipenext_id];
         var pipenext2 = MW.CONTAINER.PIPES[this._pipenext_id + 1];
 
-        // check with pipe
-        for(var id in points) {
-            var p = points[id];
-            // console.log(pipenext1.checkInPipe(p.x, p.y), pipenext2.checkInPipe(p.x, p.y));
-            if( pipenext1.checkInPipe(p.x, p.y) || pipenext2.checkInPipe(p.x, p.y) ) return true;
-        }
+        var aRect = this._bird.collideRect();
+        var bRect = pipenext1.collideRect();
+        var cRect = pipenext2.collideRect();
+
+        return cc.rectIntersectsRect(aRect, bRect) || cc.rectIntersectsRect(aRect, cRect);
+        // // check with pipe
+        // for(var id in points) {
+        //     var p = points[id];
+        //     // console.log(pipenext1.checkInPipe(p.x, p.y), pipenext2.checkInPipe(p.x, p.y));
+        //     if( pipenext1.checkInPipe(p.x, p.y) || pipenext2.checkInPipe(p.x, p.y) ) return true;
+        // }
 
         //
         // var points_ = [
@@ -239,6 +256,7 @@ var PlayState = cc.Layer.extend({
         return false;
 
     },
+
     scoreCounter:function(){
         var pipenext = MW.CONTAINER.PIPES[this._pipenext_id];
         if( this._bird.x > pipenext.x + pipenext.width*MW.PIPE_SCALE){
@@ -248,13 +266,14 @@ var PlayState = cc.Layer.extend({
             this._pipenext_id = (this._pipenext_id + 2)%length;
         }
     },
-    onGameOver:function(){
-        console.log("Game over");
 
+    onGameOver:function(){
+        cc.log("on game over")
         var scene = new cc.Scene();
         scene.addChild(new ScoreState());
-        cc.director.runScene(new cc.TransitionFade(1.2, scene));
+        cc.director.runScene(scene);
     },
+
     pause: function(){
         this._state = STATE_PAUSE;
     }

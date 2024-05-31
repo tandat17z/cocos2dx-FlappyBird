@@ -1,12 +1,15 @@
+var g_gameController = null
+
 var GameController = cc.Layer.extend({
     _lblScore: 0,
     _pause: null,
-
+    _pauseitem: null,
     ctor: function(){
         this._super();
         this.init();
     },
     init: function(){
+        g_gameController = this;
         // Score
         this._lblScore = new cc.LabelTTF("Score: " + MW.SCORE, "Arial", 50);
         this._lblScore.attr({
@@ -58,16 +61,36 @@ var GameController = cc.Layer.extend({
         this.scheduleUpdate();
     },
     update: function(){
+        MW.BEST_SCORE = Math.max(MW.BEST_SCORE, MW.SCORE);
         this._lblScore.setString("Score: " + MW.SCORE);
         this._lblSkill1.setString("Skill1: " + Math.round(g_playState._bird._timeS1) + " / " + Math.round(g_playState._bird._cdtimeS1));
         this._lblSkill2.setString("Skill2: " + Math.round(g_playState._bird._timeS2) + " / " + Math.round(g_playState._bird._cdtimeS2));
+
+        if(g_playState._state == STATE_GAMEOVER){
+            g_gameController._pauseitem.x = winSize.width/2;
+            g_gameController._pauseitem.y = winSize.height/2;
+
+            g_gameController._pauseitem.setString("Game Over");
+        }
     },
     pause: function(){
         if( g_playState._state == STATE_PAUSE ) {
             g_playState._state = STATE_PLAYING;
+            g_gameController._pauseitem.x = winSize.width - 100;
+            g_gameController._pauseitem.y = winSize.height - 100;
+
+            g_gameController._pauseitem.setString("Pause");
         }
         else if(g_playState._state == STATE_PLAYING) {
             g_playState._state = STATE_PAUSE;
+            g_gameController._pauseitem.x = winSize.width/2;
+            g_gameController._pauseitem.y = winSize.height/2;
+
+            g_gameController._pauseitem.setString("Resume");
+        }
+        else if( g_playState._state == STATE_GAMEOVER){
+            console.log("pause")
+            g_playState.onGameOver();
         }
     }
 })

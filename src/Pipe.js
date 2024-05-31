@@ -69,8 +69,8 @@ Pipe.preSet = function(){
     //     g_playState.addChild(pipe1, 5, 1);
     //     g_playState.addChild(pipe2, 5, 1);
     // }
-    var y_rand = Math.random()*300 + 75;
-    var w_rand = Math.random()*100 + 150;
+    var y_rand = Math.random()*200 + 75;
+    var w_rand = Math.random()*150 + 150;
     var arg = {
         x: 1000,
         y: y_rand,
@@ -86,8 +86,8 @@ Pipe.preSet = function(){
         console.log("add pipe" );
         var pipe = MW.CONTAINER.PIPES[MW.CONTAINER.PIPES.length - 1];
         var rand = Math.random()*300 + 200;
-        var y_rand = Math.random()*300 + 75;
-        var w_rand = Math.random()*100 + 150;
+        var y_rand = Math.random()*200 + 75;
+        var w_rand = Math.random()*150 + 150;
         var arg = {
             x: pipe.x + rand,
             y: y_rand,

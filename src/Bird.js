@@ -16,7 +16,7 @@ var Bird = cc.Sprite.extend({
     },
     init:function(){
         this.scale = MW.BIRD_SCALE;
-        this.anchorX = 1;
+        this.anchorX = 0.75;
         this.anchorY = 0.5;
         this._cdtimeS1 = 0;
         this._cdtimeS2 = 0;
@@ -48,7 +48,7 @@ var Bird = cc.Sprite.extend({
         if( this._timeS1 == 0 &&  this._timeS2 == 0 ) this._skill = 0;
 
 
-        if ( MW.KEYS[cc.KEY.space]  ){
+        if ( MW.KEYS[cc.KEY.space] || MW.CLICK ){
             this.cur_v = MW.SPEED*2;
             this._start = true;
         }
@@ -101,8 +101,7 @@ var Bird = cc.Sprite.extend({
     },
 
     collideRect:function () {
-        var w = this.width*this.scale, h = this.height*this.scale;
-        return cc.rect(this.x - w/2, this.y-h/2, w, h);
+        return this.getBoundingBox();
     },
 
     checkInBird:function(x, y){
@@ -114,12 +113,18 @@ var Bird = cc.Sprite.extend({
     },
 
     getPoints: function(){
-        var w = this.width * this.scale, h = this.height * this.scale;
-        var r = Math.PI*(-this.rotation/180);
-        var x = this.x - w, y = this.y - h/2;
-        var p1 = cc.p(x, y),
-            p2 = cc.p(x + w*Math.cos(r), y + w*Math.sin(r) ),
-            p4 = cc.p(x - h*Math.sin(r), y +  h*Math.cos(r) );
+        // var w = this.width * this.scale, h = this.height * this.scale;
+        // var r = Math.PI*(-this.rotation/180);
+        // var x = this.x, y = this.y;
+        // var p1 = cc.p(x, y),
+        //     p2 = cc.p(x + w*Math.cos(r), y + w*Math.sin(r) ),
+        //     p4 = cc.p(x - h*Math.sin(r), y + h*Math.cos(r) );
+        // var p3 = cc.p(p2.x + p4.x - p1.x, p2.y + p4.y - p1.y);
+        // return [p1, p2, p3, p4];
+        var rect = this.getBoundingBox();
+        var p1 = cc.p(rect.x, rect.y),
+            p2 = cc.p(rect.x + rect.width, rect.y),
+            p4 = cc.p(rect.x - rect.height, rect.y + rect.height);
         var p3 = cc.p(p2.x + p4.x - p1.x, p2.y + p4.y - p1.y);
         return [p1, p2, p3, p4];
     }
