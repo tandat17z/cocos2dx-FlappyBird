@@ -16,8 +16,8 @@ var Bird = cc.Sprite.extend({
     },
     init:function(){
         this.scale = MW.BIRD_SCALE;
-        this.anchorX = 0;
-        this.anchorY = 0;
+        this.anchorX = 1;
+        this.anchorY = 0.5;
         this._cdtimeS1 = 0;
         this._cdtimeS2 = 0;
         this.scheduleUpdate();
@@ -116,9 +116,10 @@ var Bird = cc.Sprite.extend({
     getPoints: function(){
         var w = this.width * this.scale, h = this.height * this.scale;
         var r = Math.PI*(-this.rotation/180);
-        var p1 = cc.p(this.x, this.y),
-            p2 = cc.p(this.x + w*Math.cos(r), this.y + w*Math.sin(r) ),
-            p4 = cc.p(this.x - h*Math.sin(r), this.y +  h*Math.cos(r) );
+        var x = this.x - w, y = this.y - h/2;
+        var p1 = cc.p(x, y),
+            p2 = cc.p(x + w*Math.cos(r), y + w*Math.sin(r) ),
+            p4 = cc.p(x - h*Math.sin(r), y +  h*Math.cos(r) );
         var p3 = cc.p(p2.x + p4.x - p1.x, p2.y + p4.y - p1.y);
         return [p1, p2, p3, p4];
     }
